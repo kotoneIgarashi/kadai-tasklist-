@@ -14,18 +14,17 @@ import models.Tasks;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class CreateServlet
+ * Servlet implementation class UpdateServlet
  */
-@WebServlet("/create")
-public class CreateServlet extends HttpServlet {
+@WebServlet("/update")
+public class UpdateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateServlet() {
+    public UpdateServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -34,27 +33,27 @@ public class CreateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String _token = request.getParameter("_token");
         if(_token != null && _token.equals(request.getSession().getId())) {
+            EntityManager em = DBUtil.createEntityManager();
 
-        EntityManager em = DBUtil.createEntityManager();
-
-        Tasks t = new Tasks();
-
+            Tasks t = em.find(Tasks.class,(Integer)(request.getSession().getAttribute("tasks_id")));
 
 
-        String content = request.getParameter("content");
-        t.setContent(content);
 
-        Timestamp currentTime = new Timestamp(System.currentTimeMillis());     // 現在の日時を取得
-        t.setCreated_at(currentTime);
-        t.setUpdated_at(currentTime);
+            String content = request.getParameter("content");
+            t.setContent(content);
 
-        em.getTransaction().begin();
-        em.persist(t);
-        em.getTransaction().commit();
-        em.close();
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            t.setUpdated_at(currentTime);
 
-        response.sendRedirect(request.getContextPath() + "/index");
-    }
+            em.getTransaction().begin();
+            em.getTransaction().commit();
+            em.close();
+
+            request.getSession().removeAttribute("tasks_id");
+
+            response.sendRedirect(request.getContextPath() + "/index");
+        }
+
     }
 
 }

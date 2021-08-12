@@ -26,6 +26,7 @@ public class Tasks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @Column(name = "content", length = 255, nullable = false)
     private String content;
 
@@ -66,6 +67,8 @@ public class Tasks {
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
     }
+
+
 
 
 }
